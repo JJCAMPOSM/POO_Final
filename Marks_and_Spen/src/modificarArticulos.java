@@ -1,3 +1,10 @@
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Map;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
@@ -8,12 +15,28 @@
  * @author Jesus Campos
  */
 public class modificarArticulos extends javax.swing.JFrame {
+    private articulosCRUD crud;
+    private Map<String, Integer> categoriasMap;
 
     /**
      * Creates new form modificarArticulos
      */
     public modificarArticulos() {
         initComponents();
+        crud = new articulosCRUD();
+        cargarCategorias();
+    }
+    
+        private void cargarCategorias() {
+        categoriasMap = crud.obtenerCategoriasMap();
+        if(categoriasMap != null) {
+            jComboBox1.removeAllItems();
+            for(String nombreCategoria : categoriasMap.keySet()) {
+                jComboBox1.addItem(nombreCategoria);
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Error al cargar categorías", "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     /**
@@ -138,6 +161,11 @@ public class modificarArticulos extends javax.swing.JFrame {
 
         jButton2.setFont(new java.awt.Font("Roboto", 1, 14)); // NOI18N
         jButton2.setText("Buscar");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         jTextField5.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -237,6 +265,37 @@ public class modificarArticulos extends javax.swing.JFrame {
     private void jTextField5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField5ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField5ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+     String idText = jTextField4.getText();
+    if(idText.isEmpty()){
+        JOptionPane.showMessageDialog(this, "ID es obligatorio", "Error", JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+    
+    try {
+        int id = Integer.parseInt(idText);
+        ResultSet consulta = crud.obtenerArticuloPorID(id);
+        DefaultTableModel modelo = (DefaultTableModel) jTable1.getModel();
+        modelo.setRowCount(0);
+        
+        if(consulta.next()) {
+            modelo.addRow(new Object[]{
+                consulta.getInt("id_articulo"),
+                consulta.getString("nombre"), 
+                consulta.getString("categoria"), 
+                consulta.getInt("stock")
+            });
+        } else {
+            JOptionPane.showMessageDialog(this, "No se encontró el artículo", "Información", JOptionPane.INFORMATION_MESSAGE);
+        }
+    } catch(SQLException b) {
+        System.out.println("Error al llenar la tabla: " + b.getMessage());
+        JOptionPane.showMessageDialog(this, "Error al buscar artículo", "Error", JOptionPane.ERROR_MESSAGE);
+    } catch(NumberFormatException e) {
+        JOptionPane.showMessageDialog(this, "ID debe ser numérico", "Error", JOptionPane.ERROR_MESSAGE);
+    }        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
      * @param args the command line arguments
