@@ -5,7 +5,7 @@ import java.sql.SQLException;
 public class ConexionMySQL {
     private static final String URL = "jdbc:mysql://localhost:3306/sistema_inventario?serverTimezone=UTC"; //cuida el nombre de la BD
     private static final String USUARIO = "root"; // Cambia esto si tienes otro usuario
-    private static final String CONTRASENA = "1234"; // Pon tu contraseña aquí en workbeach
+    private static final String CONTRASENA = "79138426500"; // Pon tu contraseña aquí en workbeach
 
     public static Connection conectar() {
         
