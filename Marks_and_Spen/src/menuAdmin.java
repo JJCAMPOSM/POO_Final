@@ -72,8 +72,8 @@ public class menuAdmin extends javax.swing.JFrame {
         });
 
         jButton3.setFont(new java.awt.Font("Roboto", 1, 14)); // NOI18N
-        jButton3.setText("Administrar Usuarios");
-        jButton3.setActionCommand("Administrar Reportes");
+        jButton3.setText("Administrar Reportes");
+        jButton3.setActionCommand("");
         jButton3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton3ActionPerformed(evt);

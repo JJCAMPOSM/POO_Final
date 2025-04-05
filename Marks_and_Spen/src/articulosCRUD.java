@@ -72,25 +72,24 @@ public class articulosCRUD {
        }
    }
    
-public boolean actualizarArticulo(int id, String nombre, String categoria, int stock) {
-    String sql = "UPDATE ARTICULOS SET nombre = ?, categoria = ?, stock = ? WHERE id = ?";
+public boolean modificarArticulo(int idArticulo, String nombre, int idCategoria, int stock) {
+    String sql = "UPDATE articulos SET nombre = ?, id_categoria = ?, stock = ? WHERE id_articulo = ?";
     
     try (PreparedStatement ps = conexion.prepareStatement(sql)) {
         ps.setString(1, nombre);
-        ps.setString(2, nombre);
+        ps.setInt(2, idCategoria);
         ps.setInt(3, stock);
-        ps.setInt(4, id);
+        ps.setInt(4, idArticulo);
         
         return ps.executeUpdate() > 0;
-        
-    } catch (SQLException e) {
-        System.err.println("Error al actualizar Articulo: " + e.getMessage());
+    } catch(SQLException e) {
+        System.err.println("Error al modificar artículo: " + e.getMessage());
         return false;
     }
 }
 
 public boolean eliminarArticulos (int id){
-    String sql = "Delete from ARTICULOS WHERE id = ?";
+    String sql = "DELETE FROM articulos WHERE id_articulo = ?";
     
     try (PreparedStatement ps = conexion.prepareStatement(sql)) {
         ps.setInt(1, id);

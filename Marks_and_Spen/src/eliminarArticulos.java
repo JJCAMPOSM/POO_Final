@@ -1,3 +1,9 @@
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
@@ -8,12 +14,14 @@
  * @author Jesus Campos
  */
 public class eliminarArticulos extends javax.swing.JFrame {
+        private articulosCRUD crud;
 
     /**
      * Creates new form eliminarArticulos
      */
     public eliminarArticulos() {
         initComponents();
+        crud = new articulosCRUD();
     }
 
     /**
@@ -112,9 +120,19 @@ public class eliminarArticulos extends javax.swing.JFrame {
 
         jButton3.setFont(new java.awt.Font("Roboto", 1, 14)); // NOI18N
         jButton3.setText("Buscar");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
 
         jButton4.setFont(new java.awt.Font("Roboto", 1, 14)); // NOI18N
         jButton4.setText("Eliminar");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -164,6 +182,92 @@ public class eliminarArticulos extends javax.swing.JFrame {
     private void jTextField5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField5ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField5ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+     String idText = jTextField5.getText();
+    if(idText.isEmpty()){
+        JOptionPane.showMessageDialog(this, "ID es obligatorio", "Error", JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+    
+    try {
+        int id = Integer.parseInt(idText);
+        ResultSet consulta = crud.obtenerArticuloPorID(id);
+        DefaultTableModel modelo = (DefaultTableModel) jTable2.getModel();
+        modelo.setRowCount(0);
+        
+        if(consulta.next()) {
+            modelo.addRow(new Object[]{
+                consulta.getInt("id_articulo"),
+                consulta.getString("nombre"), 
+                consulta.getString("categoria"), 
+                consulta.getInt("stock")
+            });
+        } else {
+            JOptionPane.showMessageDialog(this, "No se encontró el artículo", "Información", JOptionPane.INFORMATION_MESSAGE);
+        }
+    } catch(SQLException b) {
+        System.out.println("Error al llenar la tabla: " + b.getMessage());
+        JOptionPane.showMessageDialog(this, "Error al buscar artículo", "Error", JOptionPane.ERROR_MESSAGE);
+    } catch(NumberFormatException e) {
+        JOptionPane.showMessageDialog(this, "ID debe ser numérico", "Error", JOptionPane.ERROR_MESSAGE);}        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+    String idText = jTextField5.getText().trim();
+    
+    // Validar que el campo no esté vacío
+    if(idText.isEmpty()) {
+        JOptionPane.showMessageDialog(this, 
+            "Debe ingresar un ID de artículo", 
+            "Campo requerido", 
+            JOptionPane.WARNING_MESSAGE);
+        return;
+    }
+    
+    try {
+        int idArticulo = Integer.parseInt(idText);
+        
+        // Mostrar diálogo de confirmación
+        int confirmacion = JOptionPane.showConfirmDialog(
+            this,
+            "¿Está seguro que desea eliminar el artículo con ID: " + idArticulo + "?\n" +
+            "Esta acción no se puede deshacer.",
+            "Confirmar Eliminación",
+            JOptionPane.YES_NO_OPTION,
+            JOptionPane.WARNING_MESSAGE);
+        
+        if(confirmacion == JOptionPane.YES_OPTION) {
+            if(crud.eliminarArticulos(idArticulo)) {
+                JOptionPane.showMessageDialog(this, 
+                    "Artículo eliminado correctamente", 
+                    "Éxito", 
+                    JOptionPane.INFORMATION_MESSAGE);
+                
+                // Limpiar campo después de eliminar
+                jTextField5.setText("");
+                
+                // Opcional: Actualizar tabla si existe en esta interfaz
+                // actualizarTablaArticulos();
+            } else {
+                JOptionPane.showMessageDialog(this, 
+                    "No se encontró el artículo con ID: " + idArticulo, 
+                    "Error", 
+                    JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    } catch(NumberFormatException e) {
+        JOptionPane.showMessageDialog(this, 
+            "El ID debe ser un número válido", 
+            "Error de formato", 
+            JOptionPane.ERROR_MESSAGE);
+    } catch(Exception e) {
+        JOptionPane.showMessageDialog(this, 
+            "Error al intentar eliminar: " + e.getMessage(), 
+            "Error crítico", 
+            JOptionPane.ERROR_MESSAGE);
+    }        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton4ActionPerformed
 
     /**
      * @param args the command line arguments

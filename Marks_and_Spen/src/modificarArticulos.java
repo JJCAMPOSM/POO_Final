@@ -173,8 +173,19 @@ public class modificarArticulos extends javax.swing.JFrame {
             }
         });
 
+        jTextField7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField7ActionPerformed(evt);
+            }
+        });
+
         jButton3.setFont(new java.awt.Font("Roboto", 1, 14)); // NOI18N
         jButton3.setText("Modificar");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
 
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
@@ -296,6 +307,53 @@ public class modificarArticulos extends javax.swing.JFrame {
         JOptionPane.showMessageDialog(this, "ID debe ser numérico", "Error", JOptionPane.ERROR_MESSAGE);
     }        // TODO add your handling code here:
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+    String idText = jTextField4.getText().trim(); // Campo con el ID del artículo
+    String nombre = jTextField5.getText().trim();
+    String stockText = jTextField7.getText().trim();
+    String categoriaNombre = (String) jComboBox1.getSelectedItem();
+        
+      if(idText.isEmpty() || nombre.isEmpty() || stockText.isEmpty()) {
+        JOptionPane.showMessageDialog(this, "ID, nombre y stock son obligatorios", "Error", JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+    
+    try {
+        int idArticulo = Integer.parseInt(idText);
+        int stock = Integer.parseInt(stockText);
+        
+        if(stock < 0) {
+            JOptionPane.showMessageDialog(this, "El stock no puede ser negativo", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        // Obtener el ID de la categoría seleccionada
+        Integer idCategoria = categoriasMap.get(categoriaNombre);
+        if(idCategoria == null) {
+            JOptionPane.showMessageDialog(this, "Seleccione una categoría válida", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        if(crud.modificarArticulo(idArticulo, nombre, idCategoria, stock)) {
+            JOptionPane.showMessageDialog(this, "Artículo modificado exitosamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+            limpiarCampos();
+        } else {
+            JOptionPane.showMessageDialog(this, "Error al modificar artículo", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+        
+    } catch(NumberFormatException e) {
+        JOptionPane.showMessageDialog(this, "ID y stock deben ser números válidos", "Error", JOptionPane.ERROR_MESSAGE);
+    }
+          // TODO add your handling code here:
+    }//GEN-LAST:event_jButton3ActionPerformed
+    private void limpiarCampos() {
+        jTextField1.setText("");
+        jTextField3.setText("");
+        jComboBox1.setSelectedIndex(0); }
+    private void jTextField7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField7ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField7ActionPerformed
 
     /**
      * @param args the command line arguments
